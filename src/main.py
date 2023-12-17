@@ -27,6 +27,17 @@ async def on_ready() -> None:
         print(Exception)
 
 
+@client.command()
+@commands.is_owner()
+async def sync(ctx: commands.Context) -> None:
+        await ctx.message.delete()
+
+        fmt = await ctx.bot.tree.sync()
+
+        await ctx.send(f"Synced {len(fmt)} commands", delete_after=3)
+        return
+
+
 async def load():
     for file in os.listdir("cogs"):
         if file.endswith(".py"):
