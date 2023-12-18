@@ -10,12 +10,13 @@ class PrivateKeyModal(Modal, title="Decrypt Using Private Key"):
     message = TextInput(style=discord.TextStyle.long,label="Encrypted Message",required=True,placeholder="ASCII format only")
 
     async def on_submit(self, interaction: Interaction):
-        decrypted_text = self.decrypt_text(private_key=self.private_key.value,passphrase=self.passphrase.value,message=self.message.value,)
+        decrypted_text = self.decrypt_text(private_key=self.private_key.value,passphrase=self.passphrase.value,message=self.message.value)
 
-        await interaction.user.send(decrypted_text)
-        await interaction.response.send_message(
-            f"{interaction.user.mention} Check your DMs", ephemeral=True
-        )
+        try:
+            await interaction.user.send(decrypted_text)
+            await interaction.response.send_message(f"{interaction.user.mention} Check your DMs", ephemeral=True)
+        except discord.Forbidden:
+            await interaction.response.send_message(decrypted_text, ephemeral=True)
 
     def decrypt_text(self, private_key: str, passphrase: str, message: str) -> str:
         
