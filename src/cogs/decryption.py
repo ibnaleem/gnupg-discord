@@ -13,7 +13,7 @@ class PrivateKeyModal(Modal, title="Decrypt Using Private Key"):
         decrypted_text = self.decrypt_text(private_key=self.private_key.value,passphrase=self.passphrase.value,message=self.message.value)
 
         try:
-            await interaction.user.send(decrypted_text)
+            await interaction.user.send(decrypted_text, delete_after=300)
             await interaction.response.send_message(f"{interaction.user.mention} Check your DMs", ephemeral=True)
         except discord.Forbidden:
             await interaction.response.send_message(decrypted_text, ephemeral=True)
