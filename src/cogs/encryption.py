@@ -23,8 +23,11 @@ class EncryptionModal(Modal, title="Encrypt Text Using Key Fingerprint"):
     async def on_submit(self, interaction: Interaction):
         encrypted_text = self.encrypt_text(message=self.message.value, recipient_fingerprint=self.fingerprint.value)
 
-        await interaction.user.send(encrypted_text)
-        await interaction.response.send_message(f"{interaction.user.mention} Check your DMs", ephemeral=True)
+        try:
+            await interaction.user.send(encrypted_text)
+            await interaction.response.send_message(f"{interaction.user.mention} Check your DMs", ephemeral=True)
+        except discord.Forbidden:
+            await interaction.response.send_message(encrypted_text)
 
     def encrypt_text(self, message: str, recipient_fingerprint: str) -> str:
         
