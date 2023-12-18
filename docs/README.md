@@ -35,6 +35,9 @@ https://pastebin.com/djLgsd15
 ## Files
 File encryption/decryption and signatures will be supported soon.
 
+## CHANGELOG
+All changes, and major implementations, such as bug fixes and new commands will be documented in [CHANGELOG.md](https://github.com/ibnaleem/gnupg-discord/new/main/docs/CHANGELOG.md)
+
 ## Privacy
 GnuPG Discord is and will always be open-sourced, inviting member contributions. We are committed to user privacy, and no data is collected without explicit consent. In the event of necessary data collection, users have the choice to opt-out, and we ensure transparent communication before any such collection occurs. Your trust and privacy matter to us. Any breaches, privacy concerns, or issues will be communicated to all members in servers with GnuPG Discord, even those who haven't interacted with our bot. Our commitment extends beyond an open-sourced code base; we provide clear explanations of every crucial code for users without programming backgrounds, ensuring a comprehensive understanding of our bot's functionality. While we emphasize the importance of users maintaining good operational security (OPSEC) while using our bot, we disclaim responsibility for any irresponsible OPSEC practices by users. Our responsibility lies solely in how our bot handles your private keys, public keys, encryption, and signatures.
 
