@@ -5,45 +5,27 @@ from discord import app_commands, Interaction
 
 
 class PrivateKeyModal(Modal, title="Decrypt Using Private Key"):
-    def __init__(self):
-        self.gpg = gnupg.GPG()
-
-    private_key = TextInput(
-        style=discord.TextStyle.long,
-        label="Private Key in ASCII Format (never stored)",
-        required=True,
-        placeholder="ASCII format only",
-    )
-    passphrase = TextInput(
-        style=discord.TextStyle.long,
-        label="Passphrase (never stored)",
-        required=True,
-        placeholder="Passphrase to unlock private key",
-    )
-    message = TextInput(
-        style=discord.TextStyle.long,
-        label="Encrypted Message",
-        required=True,
-        placeholder="ASCII format only",
-    )
+    private_key = TextInput(style=discord.TextStyle.long,label="Private Key in ASCII Format (never stored)",required=True, placeholder="ASCII format only")
+    passphrase = TextInput(style=discord.TextStyle.long,label="Passphrase (never stored)",required=True,placeholder="Passphrase to unlock private key")
+    message = TextInput(style=discord.TextStyle.long,label="Encrypted Message",required=True,placeholder="ASCII format only")
 
     async def on_submit(self, interaction: Interaction):
-        decrypted_text = self.decrypt_text(
-            private_key=self.private_key.value,
-            passphrase=self.passphrase.value,
-            message=self.message.value,
-        )
+        decrypted_text = self.decrypt_text(private_key=self.private_key.value,passphrase=self.passphrase.value,message=self.message.value,)
+
         await interaction.user.send(decrypted_text)
         await interaction.response.send_message(
-            f"{interaction.user.mention} Check you DMs", ephemeral=True
+            f"{interaction.user.mention} Check your DMs", ephemeral=True
         )
 
     def decrypt_text(self, private_key: str, passphrase: str, message: str) -> str:
+        
+        gpg = gnupg.GPG()
+        
         try:
-            import_result = self.gpg.import_keys(private_key)
+            import_result = gpg.import_keys(private_key)
             key_fingerprint = import_result.fingerprints[0]
 
-            decrypted_data = self.gpg.decrypt(
+            decrypted_data = gpg.decrypt(
                 message, passphrase=passphrase, fingerprint=key_fingerprint
             )
 
@@ -55,7 +37,7 @@ class PrivateKeyModal(Modal, title="Decrypt Using Private Key"):
         except Exception as e:
             decrypted_text = f"Error during decryption: {str(e)}"
 
-        self.gpg.delete_keys(key_fingerprint, secret=True)
+        gpg.delete_keys(key_fingerprint, secret=True)
 
         return decrypted_text
 
@@ -70,8 +52,8 @@ class Decryption(commands.Cog):
     )
     async def decrypt(self, interaction: Interaction):
         private_key_modal = PrivateKeyModal()
-
         await interaction.response.send_modal(private_key_modal)
+
 
 async def setup(client: commands.Bot) -> None:
     await client.add_cog(Decryption(client))
