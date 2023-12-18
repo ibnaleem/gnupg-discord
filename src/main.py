@@ -1,8 +1,6 @@
-import discord, os, asyncio, datetime
-from discord import app_commands, Intents, Interaction, Embed
+import asyncio, discord, os
+from discord import Intents
 from discord.ext import commands
-from discord.ext.commands import Greedy, Context
-from typing import Literal, Optional
 
 GNUPG_TOKEN = os.environ["GNUPG_TOKEN"]
 
