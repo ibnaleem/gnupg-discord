@@ -83,7 +83,7 @@ def decrypt_text(self, private_key: str, passphrase: str, message: str) -> str:
 
     return decrypted_text
 ```
-The private key is imported and the passphrase is used to unlock it for decryption. After the `decrypted_text` holds a value, the private key is deleted using `gpg.delete_keys(key_fingerprint, secret=True)`. GnuPG Discord cannot retrieve your private key after the `on_submit()` has finished executing.
+The private key is imported and the passphrase is used to unlock it for decryption. After the `decrypted_text` holds a value, the private key is deleted using `gpg.delete_keys(key_fingerprint, secret=True)`. GnuPG Discord cannot retrieve your private key after the `on_submit()` has finished executing. This is because `private_key`, `passphrase` and `message` instances are stored in random access memory (RAM) and the memory is allocated once `on_submit()` has finished executing. 
 
 This is the same procedure that is used for signing messages.
 
