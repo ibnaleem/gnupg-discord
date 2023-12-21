@@ -1,3 +1,13 @@
+## 20/12/2023 - New Feature
+### End-to-End Encrypted Messages ([8eb0c9e](https://github.com/ibnaleem/gnupg-discord/commit/8eb0c9e8fd5b137b991bcc40fa3e3329d9a5a5b2))
+* Utilize the [`/send`](https://github.com/ibnaleem/gnupg-discord/blob/main/src/cogs/end2end.py#L63C5-L68C76) command to send End-to-End encrypted messages to other members
+* Before sending messages, users need the PGP fingerprint of the recipient. Note: Future updates may include the storage of public fingerprints for ease of access (users can opt-out as always)
+* Members can communicate across different servers as long as they share a server with GnuPG. For instance, `User1` in `Server1` and `User2` in `Server2`, not in each other's servers, can exchange encrypted messages if GnuPG is present in both `Server1` and `Server2`
+* Encryption is applied to messages prior to their transmission to the Discord API
+* No storage of messages occurs
+* Users are prompted through a [TextInput Modal](https://discordpy.readthedocs.io/en/stable/interactions/api.html#textinput) to input the PGP fingerprint, user ID, and message
+* PGP fingerprints are unique alphanumeric strings generated from a user's *public key*, serving as a distinctive identifier and ensuring the integrity of encrypted communications
+
 ## 18/12/2023 - 6 Changes
 ### Decrypted Messages Will Delete After 5 Minutes in DMs ([b027f54](https://github.com/ibnaleem/gnupg-discord/commit/b027f546ff895a649b1eded7b1a01be39e0c405f))
 * After a user receives decrypted text by our bot in their DMs, the message will remain for 5 minutes before the bot deletes it, contrary to the previous feature which allowed decrypted messages to stay in DMs forever
