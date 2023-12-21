@@ -1,15 +1,7 @@
-import discord, gnupg, os
-from pymongo import MongoClient
+import discord, gnupg
 from discord.ext import commands
 from discord.ui import Modal, TextInput
-from discord import app_commands, Embed, Interaction
-
-MONGO_URI = os.environ["MONGO_URI"]
-
-mongo_client = MongoClient(MONGO_URI)
-database = mongo_client["GnuPG"]
-pub_keys_collection = database.pub_keys
-
+from discord import app_commands, Interaction
 
 class SendEncryptedMessageModal(Modal, title="Send an Encrypted Message to a User"):
     
