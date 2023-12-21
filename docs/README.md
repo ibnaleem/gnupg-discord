@@ -111,7 +111,7 @@ Before making any changes, it's recommended to create a new branch. This ensures
 $ git checkout -b branch-name
 ```
 ### Make the Desired Changes
-Now, you can proceed to make your desired changes to the project. Whether it's fixing grammer mistakes, adding new material to chapters, improving documentation, or optimizing exercises, your efforts will be instrumental in enhancing the project.
+Now, you can proceed to make your desired changes to the project. Whether it's fixing bugs, adding new features, improving documentation, or optimizing code, your efforts will be instrumental in enhancing the project.
 
 ### Commit and Push Changes
 Once you have made the necessary changes, commit your work using the following commands:
