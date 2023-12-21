@@ -29,6 +29,7 @@ https://pastebin.com/djLgsd15
 - `/verify` - Verify signatures using fingerprints
 - `/fingerprint` - Retrieve public key's fingerprint
 - `/encrypt` - Encrypt text using public key fingerprints
+- `/send` - send End-to-End encrypted messages to other members
 - `/hash [hash function] [text]` - Generate a hash with various hash functions
 - `/decrypt` - Decrypt text using private key (see [How Decryption Works with GnuPG Discord](#how-decryption-works-with-gnupg-discord))
 
