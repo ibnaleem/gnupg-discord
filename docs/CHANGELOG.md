@@ -12,7 +12,7 @@
 * Users are prompted with 6 hash functions and a text argument for hashing their text
 
 ### Added Decryption Command ([31ee975](https://github.com/ibnaleem/gnupg-discord/commit/31ee975e30914239c32540d0a901e7a4130892fd))
-* Upon invoking the command, users input their PGP fingerprint and message in a [TextInput Modal](https://discordpy.readthedocs.io/en/stable/interactions/api.html#textinput)
+* Upon invoking the command, users input their PGP Private Key and message in a [TextInput Modal](https://discordpy.readthedocs.io/en/stable/interactions/api.html#textinput)
 * Private keys and passphrases are imported using [gnupg-python](https://gnupg.readthedocs.io/en/latest/), and deleted after decryption. Private keys and passphrases are not stored. See [How Decryption Works with GnuPG Discord](https://github.com/ibnaleem/gnupg-discord/blob/main/docs/README.md#how-decryption-works-with-gnupg-discord)
 * Decrypted messages are sent to users via DMs, accompanied by an ephemeral interaction response prompting them to check DMs
 
