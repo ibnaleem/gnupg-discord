@@ -2,7 +2,7 @@ const path = require('path');
 const databasePath = path.join(__dirname, 'db.js');
 
 const { connectDB } = require(databasePath)
-const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ModalSubmitInteraction } = require('discord.js');
+const { SlashCommandBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ModalSubmitInteraction } = require('discord.js');
 
 
 const pgpInput = new TextInputBuilder({
@@ -15,11 +15,6 @@ const pgpInput = new TextInputBuilder({
 
 
 const firstActionRow = new ActionRowBuilder().addComponents(pgpInput);
-
-const embed = new EmbedBuilder()
-       .setTitle('✅ GPG public key successfully recorded')
-        .setTimestamp()
-        .setColor('#00FF00')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -58,11 +53,11 @@ module.exports = {
                                 publicKeyCollection.updateOne(
                                     { userId: interaction.user.id },
                                     { $set: { publicKey: publicKey, timestamp: new Date() } }
-                                ).then(() => interaction.reply({ embeds: [embed] }));
+                                ).then(() => interaction.reply({content: "✅ GPG public key successfully recorded", ephemeral: true}));
                                 
                             } else {
                                 publicKeyCollection.insertOne(newDocument)
-                                           .then(() => interaction.reply({ embeds: [embed] }));
+                                           .then(() => interaction.reply({content: "✅ GPG public key successfully recorded", ephemeral: true}));
                             }
                         }));
     },
