@@ -52,8 +52,18 @@ module.exports = {
                                 timestamp: Date()
                             }
 
-                            publicKeyCollection.insertOne(newDocument)
+                            const userKey =  publicKeyCollection.findOne({ userId: interaction.user.id });
+
+                            if (userKey) {
+                                publicKeyCollection.updateOne(
+                                    { userId: interaction.user.id },
+                                    { $set: { publicKey: publicKey, timestamp: new Date() } }
+                                ).then(() => interaction.reply({ embeds: [embed] }));
+                                
+                            } else {
+                                publicKeyCollection.insertOne(newDocument)
                                            .then(() => interaction.reply({ embeds: [embed] }));
+                            }
                         }));
     },
 };
