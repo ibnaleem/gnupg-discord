@@ -1,3 +1,17 @@
+## 22/10/2024 - 13 Changes
+### CommonJS to ES Module
+Summary: [j3lte/pastedeno](https://github.com/j3lte/pastedeno) forced me to rewrite the codebase from CommonJS to a ECMAScript module. ([])
+
+## 22/10/2024 - Discord.js Rewrite
+Summary: The entire bot's source code has been migrated to [Discord.js](https://discord.js.org) because discord.py has become significantly deprecated, particularly in its interactions with Discord's API. ([f9161b0](https://github.com/ibnaleem/gnupg-discord/commit/7e1d418be3167a974cdbd34e166ff0216da826cf))
+- Converted the interaction reply from embed to an ephemeral plaintext message since its more concise. ([fdf5e66](https://github.com/ibnaleem/gnupg-discord/commit/ea6d6aad642fd4a2b5ae13660de8dc6072ec2df2))
+- Renamed `/set-public-key` command to `/set-gpg-key` command ([edb21da][https://github.com/ibnaleem/gnupg-discord/commit/fdf5e66496ef64dda62cafa7419168ba4db8e6e6])
+- Implemented a check to see if a user is already in the database: if they aren't, they'll be added; if they are, their GPG key will be updated to the new one. Even if it's a resubmission (i.e., the GPG key is the same as the stored one), this operation will still be performed for the sake of simplicity, as adding another check would reduce efficiency. ([05f3d35](https://github.com/ibnaleem/gnupg-discord/commit/edb21da50ba0f7b130f3e249cf2333b62bb3a73b))
+- Implemented the `/set-public-key` command to prompt users for their GPG public key and store it in the database. ([c377085](https://github.com/ibnaleem/gnupg-discord/commit/05f3d35b83301497aa56ac466e7382f2e11340c6))
+- Created a db.js file to interact with MongoDB Client to store user's GPG keys. ([cab313d
+ ](https://github.com/ibnaleem/gnupg-discord/commit/c37708531214e34cd0cff36264dd64add58441e2))
+- Initialisation of index.js ([f9161b0](https://github.com/ibnaleem/gnupg-discord/commit/7e1d418be3167a974cdbd34e166ff0216da826cf))
+
 ## 20/12/2023 - New Feature
 ### End-to-End Encrypted Messages ([8eb0c9e](https://github.com/ibnaleem/gnupg-discord/commit/8eb0c9e8fd5b137b991bcc40fa3e3329d9a5a5b2))
 * Utilize the [`/send`](https://github.com/ibnaleem/gnupg-discord/blob/main/src/cogs/end2end.py#L63C5-L68C76) command to send End-to-End encrypted messages to other members
