@@ -84,7 +84,6 @@ export const execute = async (interaction) => {
                 const hashPwd = crypto.createHash('sha1')
                                       .update(encrypted)
                                       .digest('hex')
-                                      .slice(0, 7);
 
                 const pastebin = new Pastebin({
                     api_dev_key: process.env.PASTEBIN_API_KEY,
