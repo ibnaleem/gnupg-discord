@@ -102,7 +102,7 @@ export const execute = async (interaction) => {
                     title: `🔒 New Encrypted Message from ${interaction.user.username}!`,
                     description: `\`\`\`${paste}\`\`\``,
                     timestamp: new Date(),
-                    color: 0x3498db,
+                    color: 0x00008B,
                 });
 
                 await interaction.followUp({ content: `✅ Your message was successfully sent to <@${userId}>`, ephemeral: true });
