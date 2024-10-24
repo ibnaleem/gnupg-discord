@@ -1,9 +1,7 @@
-const path = require('path');
-const databasePath = path.join(__dirname, 'db.js');
-
-const { connectDB } = require(databasePath)
-const { SlashCommandBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ModalSubmitInteraction } = require('discord.js');
-
+import path from 'path';
+import db from './db.js';
+import { SlashCommandBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ModalSubmitInteraction } from 'discord.js';
+const { connectDB } = db;
 
 const pgpInput = new TextInputBuilder({
     customId: 'public-key',
@@ -16,49 +14,48 @@ const pgpInput = new TextInputBuilder({
 
 const firstActionRow = new ActionRowBuilder().addComponents(pgpInput);
 
-module.exports = {
-    data: new SlashCommandBuilder()
+export const data = new SlashCommandBuilder()
         .setName('set-gpg-key')
-        .setDescription('Set your GPG key so other users can encrypt messages to you.'),
-    
-        async execute(interaction) {
-            const modal = new ModalBuilder({
-                customId: `pgp-submission-${interaction.user.id}`,
-                title: 'Set Public Key',
-            });
+        .setDescription('Set your GPG key so other users can encrypt messages to you.');
 
-            const cluster = await connectDB();
-            const db = cluster.db("gnupg-discord");
-            const publicKeyCollection = db.collection("public-keys");
+export const execute = async (interaction) => {
 
-            modal.addComponents(firstActionRow);
+    const modal = new ModalBuilder({
+        customId: `pgp-submission-${interaction.user.id}`,
+        title: 'Set Public Key',
+    });
 
-            await interaction.showModal(modal);
+    const cluster = await connectDB();
+    const db = cluster.db("gnupg-discord");
+    const publicKeyCollection = db.collection("public-keys");
 
-            const filter = (interaction) => interaction.customId === `pgp-submission-${interaction.user.id}`
+    modal.addComponents(firstActionRow);
 
-            interaction.awaitModalSubmit({ filter, time: 60_000 })
-                        .then((ModalSubmitInteraction => {
-                            const publicKey = ModalSubmitInteraction.fields.getTextInputValue('public-key')
-                            
-                            newDocument = {
-                                userId: interaction.user.id,
-                                publicKey: publicKey,
-                                timestamp: Date()
-                            }
+    await interaction.showModal(modal);
 
-                            const userKey =  publicKeyCollection.findOne({ userId: interaction.user.id });
+    const filter = (interaction) => interaction.customId === `pgp-submission-${interaction.user.id}`
 
-                            if (userKey) {
-                                publicKeyCollection.updateOne(
-                                    { userId: interaction.user.id },
-                                    { $set: { publicKey: publicKey, timestamp: new Date() } }
-                                ).then(() => interaction.reply({content: "✅ GPG public key successfully recorded", ephemeral: true}));
-                                
-                            } else {
-                                publicKeyCollection.insertOne(newDocument)
-                                           .then(() => interaction.reply({content: "✅ GPG public key successfully recorded", ephemeral: true}));
-                            }
-                        }));
-    },
-};
+    interaction.awaitModalSubmit({ filter, time: 60_000 })
+                .then((ModalSubmitInteraction => {
+                    const publicKey = ModalSubmitInteraction.fields.getTextInputValue('public-key')
+                    
+                    newDocument = {
+                        userId: interaction.user.id,
+                        publicKey: publicKey,
+                        timestamp: Date()
+                    }
+
+                    const userKey =  publicKeyCollection.findOne({ userId: interaction.user.id });
+
+                    if (userKey) {
+                        publicKeyCollection.updateOne(
+                            { userId: interaction.user.id },
+                            { $set: { publicKey: publicKey, timestamp: new Date() } }
+                        ).then(() => interaction.reply({content: "✅ GPG public key successfully recorded", ephemeral: true}));
+                        
+                    } else {
+                        publicKeyCollection.insertOne(newDocument)
+                                   .then(() => interaction.reply({content: "✅ GPG public key successfully recorded", ephemeral: true}));
+                    }
+                }));
+}
