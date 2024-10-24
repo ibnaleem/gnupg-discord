@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 
 dotenv.config();
-const token = process.env.GNUPG_TOKEN;
+const token = process.env.GNUPG_DISCORD_TOKEN;
 const clientId = '1186037614797668403';
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });

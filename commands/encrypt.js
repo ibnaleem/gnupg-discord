@@ -92,6 +92,9 @@ export const execute = async (interaction) => {
                     description: `\`\`\`https://paste.lcomrade.su/${paste.id}\`\`\``,
                     timestamp: new Date(),
                     color: 0x3498db,
+                    thumbnail: {
+                        url: interaction.user.avatarURL() || null,
+                    }
                 });
 
                 await interaction.followUp({ content: `✅ Your message was successfully sent to <@${userId}>`, ephemeral: true });

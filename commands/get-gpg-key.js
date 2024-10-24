@@ -8,12 +8,6 @@ const { connectDB } = db;
 const { createPaste } = paste;
 dotenv.config();
 
-const pastebin = new Pastebin({
-  api_dev_key: process.env.PASTEBIN_API_KEY,
-  api_user_name: process.env.PASTEBIN_USERNAME,
-  api_user_password: process.env.PASTEBIN_PASSWORD,
-});
-
 export const data = new SlashCommandBuilder()
     .setName('get-gpg-key')
     .setDescription('Get a member\'s GPG key.')
@@ -45,10 +39,13 @@ export const execute = async (interaction) => {
           
   
       const embed = new EmbedBuilder({
-                        title: `🔑 <@${user.id}>'s GPG Key`,
+                        title: `🔑 ${user.username}'s GPG Key`,
                         description: `\`\`\`https://paste.lcomrade.su/${paste.id}\`\`\``,
                         timestamp: new Date(),
                         color: 0x3498db,
+                        thumbnail: {
+                          url: user.avatarURL() || null,
+                        }
                       });
           
       await interaction.reply({ content: `<@${interaction.user.id}>`, embeds: [embed], ephemeral: true });
