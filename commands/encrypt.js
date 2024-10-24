@@ -106,9 +106,10 @@ export const execute = async (interaction) => {
                     color: 0x3498db,
                 });
 
+                await interaction.followUp({ content: `✅ Your message was successfully sent to <@${userId}>`, ephemeral: true });
+
                 try {
                     const interactionGuildMember = await interaction.guild.members.fetch(userId);
-                    await interaction.user.send({ content: `✅ Your message was successfully sent to <@${userId}>`, ephemeral: true });
                     await interactionGuildMember.send({ embeds: [encryptedEmbed] });
                 } catch (e) {
                     await interaction.reply({ content: `✅ Your message was successfully sent to <@${userId}>`, ephemeral: true });
