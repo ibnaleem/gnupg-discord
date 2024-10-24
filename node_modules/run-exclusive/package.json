@@ -1,0 +1,39 @@
+{
+    "name": "run-exclusive",
+    "version": "2.2.19",
+    "description": "Generate functions that do not allow parallel executions",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/garronej/run_exclusive.git"
+    },
+    "main": "lib/runExclusive.js",
+    "types": "lib/runExclusive.d.ts",
+    "author": "u/garronej",
+    "license": "MIT",
+    "keywords": [
+        "deno",
+        "mutex",
+        "async-await",
+        "lock",
+        "callback",
+        "promise",
+        "typescript",
+        "type-safe"
+    ],
+    "homepage": "https://github.com/garronej/run_exclusive",
+    "dependencies": {
+        "minimal-polyfills": "^2.2.3"
+    },
+    "devDependencies": {
+        "@types/node": "^10.3.2",
+        "evt": "^2.4.18",
+        "typescript": "^3.9.7",
+        "denoify": "^1.5.3"
+    },
+    "files": [
+        "src/lib/runExclusive.ts",
+        "lib/runExclusive.d.ts",
+        "lib/runExclusive.js",
+        "lib/runExclusive.js.map"
+    ]
+}
