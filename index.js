@@ -1,9 +1,16 @@
-const fs = require('fs');
-const path = require('path');
-const { REST, Routes } = require('discord.js');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+import fs from 'fs';
+import path from 'path';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { REST, Routes } from 'discord.js';
+import { Client, Collection, Events, GatewayIntentBits } from 'discord.js';
 
-require('dotenv').config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+
+dotenv.config();
 const token = process.env.GNUPG_TOKEN;
 const clientId = '1186037614797668403';
 
@@ -15,12 +22,20 @@ const commandFiles = fs.readdirSync(foldersPath).filter(file => file.endsWith('.
 
 for (const file of commandFiles) {
     const filePath = path.join(foldersPath, file);
-    const command = require(filePath);
-    if ('data' in command && 'execute' in command) {
-        client.commands.set(command.data.name, command);
-        commands.push(command.data.toJSON());
-    } else {
-        console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+    
+    try {
+        const command = await import(`file://${filePath}`);
+
+       
+        const { data, execute } = command;
+        if (data && execute) {
+            client.commands.set(data.name, command);
+            commands.push(data.toJSON()); // This should now work
+        } else {
+            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
+        }
+    } catch (error) {
+        console.error(`[ERROR] Failed to import command at ${filePath}:`, error);
     }
 }
 
