@@ -1,18 +1,7 @@
-<div align="center">
-    <img src="https://loganmarchione.com/assets/featured/featured_gnupg.svg" width="50%" height="50%">
-</div>
-    
-<p align="center">The open source repository for GnuPG Discord Bot. Secure your server with the power of GnuPG encryption. Encrypt messages, verify authenticity with digital signatures, and manage keys effortlessly. Use <b>/help</b> for command details.</p>
-
-<div align="center">
-    <a href="https://www.buymeacoffee.com/ibnaleem" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
-</div>
-
-<div align="center">
-
 <a href="https://github.com/ibnaleem/gnupg-discord/stargazers"><img src="https://img.shields.io/github/stars/ibnaleem/gnupg-discord.svg?style=for-the-badge"></a>
 <a href="https://github.com/ibnaleem/gnupg-discord/blob/main/docs/LICENSE"><img src="https://img.shields.io/github/license/ibnaleem/gnupg-discord?style=for-the-badge"></a>
-</div>
+# GnuPG Discord Bot
+An open-source GnuPG Discord bot designed to enable users to efficiently encrypt messages to other Discord members with ease, especially on mobile where GnuPG is not available.
 
 ### Invite GnuPG
 ```
@@ -24,69 +13,70 @@ https://pastebin.com/djLgsd15
 ```
 
 ## Commands
-- `/sign` - Create ASCII signatures
+- `/encrypt [@member]` - Send an encrypted message to a user. [I do not store this.](https://github.com/ibnaleem/gnupg-discord/blob/main/commands/encrypt.js#L64-L128)
+- `/set-gpg-key` - Set your GPG key so other users can encrypt messages to you.
+- `/get-gpg-key [@member]` - Get a member's GPG key.
+- `/info` - Miscellaneous information about me.
 - `/send-key` - Export a key to a keyserver
-- `/verify` - Verify signatures using fingerprints
-- `/fingerprint` - Retrieve public key's fingerprint
-- `/encrypt` - Encrypt text using public key fingerprints
-- `/send` - send End-to-End encrypted messages to other members
-- `/hash [hash function] [text]` - Generate a hash with various hash functions
-- `/decrypt` - Decrypt text using private key (see [How Decryption Works with GnuPG Discord](#how-decryption-works-with-gnupg-discord))
-
-## Files
-File encryption/decryption and signatures will be supported soon.
+- `/verify` - Verify signatures
 
 ## CHANGELOG
 All changes, and major implementations, such as bug fixes and new commands will be documented in [CHANGELOG.md](https://github.com/ibnaleem/gnupg-discord/blob/main/docs/CHANGELOG.md)
 
 ## Privacy
-GnuPG Discord is and will always be open-sourced, inviting member contributions. We are committed to user privacy, and no data is collected without explicit consent. In the event of necessary data collection, users have the choice to opt-out, and we ensure transparent communication before any such collection occurs. Your trust and privacy matter to us. Any breaches, privacy concerns, or issues will be communicated to all members in servers with GnuPG Discord, even those who haven't interacted with our bot. Our commitment extends beyond an open-sourced code base; we provide clear explanations of every crucial code for users without programming backgrounds, ensuring a comprehensive understanding of our bot's functionality. While we emphasize the importance of users maintaining good operational security (OPSEC) while using our bot, we disclaim responsibility for any irresponsible OPSEC practices by users. Our responsibility lies solely in how our bot handles your private keys, public keys, encryption, and signatures.
-
-## How Decryption Works with GnuPG Discord
-GnuPG Discord does not store or collect private keys. Instead, you are mandated to provide your private key and passphrase for signatures and decryption. When you run `/decrypt` or `/sign`, you are met with a Discord TextInput Modal.
+Encryption takes place via Discord's API. While this is an open-sourced Discord bot, please refrain from sending any sensitive information through Discord. When you submit a message, it is transmitted through Discord's API to GnuPG Discord, where it encrypts your plaintext message and then sends it to the recipient via the same API.
 <div align="center">
-    <img src=https://github.com/ibnaleem/gnupg-discord/blob/main/docs/assets/text-input-modal.png width="50%" height="50%">
+    <img src="https://i.ibb.co/TwWFc7R/Screenshot-2024-10-24-at-18-12-21-cleaned.png" width="50%" height="50%">
 </div>
 
-Since most Discord bots are not open-sourced, Discord has placed a warning for users to not share their passwords or sensitive information. This includes private keys and passphrases. Fortuately, GnuPG Discord is completely open sourced, and the handling of this form can be viewed inside the [decryption cog](https://github.com/ibnaleem/gnupg-discord/blob/main/src/cogs/decryption.py#L7C1-L42C30).
+Above is a modal, and it has two fields defined as:
 
-```py
-class PrivateKeyModal(Modal, title="Decrypt Using Private Key"):
-    private_key = TextInput(style=discord.TextStyle.long,label="Private Key in ASCII Format (never stored)",required=True, placeholder="ASCII format only")
-    passphrase = TextInput(style=discord.TextStyle.long,label="Passphrase (never stored)",required=True,placeholder="Passphrase to unlock private key")
-    message = TextInput(style=discord.TextStyle.long,label="Encrypted Message",required=True,placeholder="ASCII format only")
+```js
+const userIdField = new TextInputBuilder({
+        customId: 'user-id-field',
+        label: "Discord ID",
+        placeholder: 'E.g 1110526906106904626',
+        style: TextInputStyle.Short,
+        required: true,
+    });
+    
+const messageField = new TextInputBuilder({
+        customId: 'message-field',
+        label: 'Message',
+        placeholder: "Disclaimer: Encryption occurs via the Discord API",
+        style: TextInputStyle.Paragraph,
+        minLength: 1,
+        required: true,
+    });
 ```
-a class is created called `PrivateKeyModal` which inherits from [`discord.ui.Modal`](https://discordpy.readthedocs.io/en/stable/interactions/api.html#modal). This is essential for creating the Modal. `private_key`, `passphrase` and `message` are instances of the `TextInput()` class which creates text fields for users to input text inside of. 
+When the user submits the modal, [`async (modalSubmitInteraction) => {...}`](https://github.com/ibnaleem/gnupg-discord/blob/main/commands/encrypt.js#L64-L65) is triggered, allowing me, the developer, to retreive the values of these fields:
 
-```py
-async def on_submit(self, interaction: Interaction):
-    decrypted_text = self.decrypt_text(private_key=self.private_key.value,passphrase=self.passphrase.value,message=self.message.value,)
-    await interaction.user.send(decrypted_text)
-    await interaction.response.send_message(f"{interaction.user.mention} Check your DMs", ephemeral=True)
+```js
+const userId = modalSubmitInteraction.fields.getTextInputValue('user-id-field');
+const message = modalSubmitInteraction.fields.getTextInputValue('message-field');
 ```
-A user does not submit anything until they trigger the `on_submit()` method of the `PrivateKeyModal(Modal)` class. This is done by clicking the ["Submit" button in the Modal](https://github.com/ibnaleem/gnupg-discord/blob/main/docs/assets/text-input-modal.png). To retreive the private key, passphrase, and encrypted message, the `.value` attribute on the `private_key`, `passphrase` and `message` instances is used. These values are sent to the `decrypt_text()` method:
-```py
-def decrypt_text(self, private_key: str, passphrase: str, message: str) -> str:
-    gpg = gnupg.GPG()
-    try:
-        import_result = gpg.import_keys(private_key)
-        key_fingerprint = import_result.fingerprints[0]
-        decrypted_data = gpg.decrypt(message, passphrase=passphrase, fingerprint=key_fingerprint)
-        if decrypted_data.ok:
-            decrypted_text = decrypted_data.data.decode("utf-8")
-        else:
-            decrypted_text = f"Decryption failed: {decrypted_data.status}"
-
-    except Exception as e:
-        decrypted_text = f"Error during decryption: {str(e)}"
-
-    gpg.delete_keys(key_fingerprint, secret=True)
-
-    return decrypted_text
+The message field—specifically, the one you want to encrypt—remains in plaintext for me because Discord's API doesn’t encrypt it when it’s sent to GnuPG. This is why they recommend against sharing sensitive information through it. Although the message sent to GnuPG is plaintext, I would need to store it in a database; otherwise, it would be lost from memory once the interaction ends. Since GnuPG only stores your GPG key when you use the `/set-gpg-key` command, you don’t need to worry about me decrypting your messages. I don’t have access to your plaintext message after our interaction is complete. The GnuPG bot encrypts your plaintext message and sends it to the recipient, ensuring that Discord cannot access the messages exchanged between you and your recipient. In summary:
 ```
-The private key is imported and the passphrase is used to unlock it for decryption. After the `decrypted_text` holds a value, the private key is deleted using `gpg.delete_keys(key_fingerprint, secret=True)`. GnuPG Discord cannot retrieve your private key after the `on_submit()` has finished executing because `private_key`, `passphrase` and `message` instances are stored in random access memory (RAM) and the memory is allocated to another program once `on_submit()` has finished executing. 
+Bob uses GnuPG Discord to encrypt the message "Hello, my name is Bob" to Alice
+GnuPG Discord sends the encrypted message to Alice
+Alice reads and decrypts the encrypted message on her device
+Alice uses GnuPG Discord to encrypt the message "Hello Bob, my name is Alice
+GnuPG Discord sends the encrypted message to Bob
+Bob reads and decrypts the encrypted message on his device
+...
+```
+As opposed to
+```
+Bob: Hello, my name is Bob
+Alice: Hello Bob, my name is Alice
+```
+What's more, all this is happening through a third-party app, meaning Bob and Alice don't even have DMs with each other, or any interaction for that matter:
+```
+Bob --> GnuPG Bot --> Alice
+Alice --> GnuPG Bot --> Bob
+Bob <------x------> Alice
 
-This is the same procedure that is used for signing messages.
+```
 
 ## Contributing
 I welcome contributions from the community and appreciate the time and effort put into making [GnuPG Discord](https://github.com/ibnaleem/gnupg-discord) better. To contribute, please follow the guidelines and steps outlined below:
