@@ -1,9 +1,8 @@
-import path from 'path';
 import db from './db.js';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
 import openpgp from 'openpgp';
-import { Pastebin, PrivacyLevel } from "pastedeno";
+import paste from './paste.js';
 import {
     SlashCommandBuilder,
     ActionRowBuilder,
@@ -14,6 +13,7 @@ import {
 } from 'discord.js';
 dotenv.config();
 const { connectDB } = db;
+const { createPaste } = paste
 
 export const data = new SlashCommandBuilder()
         .setName('encrypt')
@@ -85,24 +85,13 @@ export const execute = async (interaction) => {
                                       .update(encrypted)
                                       .digest('hex')
 
-                const pastebin = new Pastebin({
-                    api_dev_key: process.env.PASTEBIN_API_KEY,
-                    api_user_name: process.env.PASTEBIN_USERNAME,
-                    api_user_password: process.env.PASTEBIN_PASSWORD,
-                });
-
-                const paste = await pastebin.createPaste({
-                    text: String(encrypted),
-                    title: String(hashPwd),
-                    format: "javascript",
-                    privacy: PrivacyLevel.UNLISTED,
-                });
+                const paste = await createPaste(hashPwd, encrypted)
 
                 const encryptedEmbed = new EmbedBuilder({
                     title: `🔒 New Encrypted Message from ${interaction.user.username}!`,
-                    description: `\`\`\`${paste}\`\`\``,
+                    description: `\`\`\`https://paste.lcomrade.su/${paste.id}\`\`\``,
                     timestamp: new Date(),
-                    color: 0x00008B,
+                    color: 0x3498db,
                 });
 
                 await interaction.followUp({ content: `✅ Your message was successfully sent to <@${userId}>`, ephemeral: true });

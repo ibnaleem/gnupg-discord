@@ -1,4 +1,3 @@
-import path from 'path';
 import db from './db.js';
 import { SlashCommandBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ModalSubmitInteraction } from 'discord.js';
 const { connectDB } = db;

@@ -1,11 +1,18 @@
 import db from './db.js';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
-import { Pastebin, PrivacyLevel } from 'pastedeno';
+import paste from './paste.js';
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
 const { connectDB } = db;
+const { createPaste } = paste;
 dotenv.config();
+
+const pastebin = new Pastebin({
+  api_dev_key: process.env.PASTEBIN_API_KEY,
+  api_user_name: process.env.PASTEBIN_USERNAME,
+  api_user_password: process.env.PASTEBIN_PASSWORD,
+});
 
 export const data = new SlashCommandBuilder()
     .setName('get-gpg-key')
@@ -31,30 +38,19 @@ export const execute = async (interaction) => {
 
       const hashPwd = crypto.createHash('sha1')
                             .update(publicKeyArmored)
-                            .digest('hex');
+                            .digest('hex')
+                          
 
-      const pastebin = new Pastebin({
-                      api_dev_key: process.env.PASTEBIN_API_KEY,
-                      api_user_name: process.env.PASTEBIN_USERNAME,
-                      api_user_password: process.env.PASTEBIN_PASSWORD,
-                    });
+      const paste = await createPaste(hashPwd, publicKeyArmored)
           
-
-      const paste = await pastebin.createPaste({
-                    text: publicKeyArmored,
-                    title: hashPwd,
-                    format: "javascript",
-                    privacy: PrivacyLevel.UNLISTED,
-                    });
-
-          
+  
       const embed = new EmbedBuilder({
                         title: `🔑 <@${user.id}>'s GPG Key`,
-                        description: `\`\`\`${paste}\`\`\``,
+                        description: `\`\`\`https://paste.lcomrade.su/${paste.id}\`\`\``,
                         timestamp: new Date(),
-                        color: 0x00008B,
+                        color: 0x3498db,
                       });
           
-      await interaction.reply({ content: `<@${interaction.user.id}`, embeds: [embed], ephemeral: true });
+      await interaction.reply({ content: `<@${interaction.user.id}>`, embeds: [embed], ephemeral: true });
   }
 }
