@@ -5,7 +5,13 @@ const githubButton = new ButtonBuilder()
     .setURL("https://github.com/ibnaleem/gnupg-discord")
     .setStyle(ButtonStyle.Link)
 
-const githubButtonRow = new ActionRowBuilder().addComponents(githubButton)
+const issuesButton = new ButtonBuilder()
+    .setLabel('Issues')
+    .setURL("https://github.com/ibnaleem/gnupg-discord/issues")
+    .setStyle(ButtonStyle.Link)
+    .setEmoji("🐛")
+
+const githubButtonRow = new ActionRowBuilder().addComponents(githubButton, issuesButton)
 
 export const data = new SlashCommandBuilder()
         .setName('help')
