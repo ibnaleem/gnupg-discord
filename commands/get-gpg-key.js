@@ -48,6 +48,6 @@ export const execute = async (interaction) => {
                         }
                       });
           
-      await interaction.followUp({ content: `<@${interaction.user.id}>`, embeds: [embed], ephemeral: true });
+      await interaction.reply({ content: `<@${interaction.user.id}>`, embeds: [embed], ephemeral: true });
   }
 }
